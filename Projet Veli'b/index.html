@@ -1,0 +1,69 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        <h1> Velib </h1>
+
+        <ul id="stations">
+        </ul>
+
+        <div id="station">
+            <h1 id="name"></h1>
+            <p id="bikes"></p>
+            <p>Adresse : <span id="address"></span> </p>
+            <p>nb de place : <span id="free"></span></p>
+            <p>GPS : <span id="gps"></span></p>
+        </div>
+
+        <script>
+            const API_KEY = 'b91888dba6ab242e1f13b377cb8b47b13aec62e0'; 
+
+            let url = 'https://api.jcdecaux.com/vls/v3/stations?contract=Lyon&apiKey='+API_KEY;
+            console.log(url);
+            window.fetch(url)
+            .then(function( response )
+            {
+                return response.json();
+            })
+            .then(function(stations)
+            {
+                console.log(stations);
+                let html = '';
+                for(let i = 0 ; i < stations.length ; i ++ )
+                {
+                    html += `<li data-number="${stations[i].number}">${stations[i].name} Adresse :  ${stations[i].address} </li>`
+                }
+                let ul = document.querySelector("#stations");
+                ul.innerHTML = html;
+
+                let lis = document.querySelectorAll('#stations li');
+                
+                for( let i = 0 ; i < lis.length;i++)
+                {
+                    lis[i].addEventListener('click' , function()
+                    {
+                        let number = this.dataset.number;
+                        let url = 'https://api.jcdecaux.com/vls/v3/stations/'+number+'?contract=Lyon&apiKey='+API_KEY;
+
+                        window.fetch(url)
+                        .then(function( response )
+                        {
+                            return response.json();
+                        })
+                        .then(function(station)
+                        {
+                            document.getElementById('name').textContent = station.name;
+                            document.getElementById('address').textContent = station.address;
+                            document.getElementById('bikes').textContent = station.mainStands.availabilities.bikes;
+                            document.getElementById('free').textContent = station.mainStands.availabilities.stands;
+                            document.getElementById('gps').textContent = 
+                            station.position.latitude+','+station.position.longitude;
+                        });
+
+                    })
+                }
+            });
+        </script>
+    </body>
+</html>

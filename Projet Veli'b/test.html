@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Disney Charaters</h1>
+    
+    <ul id="characters"></ul>
+
+    <script>
+        let url = 'https://api.disneyapi.dev/characters';
+        console.table(url);
+        window.fetch(url)
+            .then(function( response )
+            {
+                return response.json();
+            })
+            .then(function(characters)
+            {
+                console.log(characters);
+                let html = '';
+                for(let i = 0 ; i < characters.length ; i ++ )
+                {
+                    html += `<li data-name="${characters[i].name}">${characters[i].name} </li>`
+                }
+                let ul = document.querySelector("#characters");
+                ul.innerHTML = html;
+
+                let lis = document.querySelectorAll('#characters li');
+            });
+    </script>
+</body>
+</html>
